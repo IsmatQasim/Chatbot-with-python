@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>ChatBot</title>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <title>ChatBot</title>
     <style>
-
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Fira+Sans:ital,wght@0,300;0,400;1,500;1,800&family=Lato:ital,wght@1,300;1,400;1,900&family=Poppins:wght@300;400;500;600&family=Salsa&family=Work+Sans&display=swap');
         body {
             font-family: Arial, sans-serif;
@@ -104,42 +103,39 @@
             margin: 10px 0;
             padding-right: 40px; 
         }
-            
-        .read-aloud-icon {
+        .read-aloud-icon, .copy-btn, .delete-btn {
             cursor: pointer;
-            right: 4px;
-        }
-        .copy-btn,.delete-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
         background-color: transparent;
-        border: none;
-        cursor: pointer;
         color: rgb(25, 25, 27); 
-        font-size: 20px; 
+        font-size: 20px;
+        margin: 1px;
         }
-        .copy-btn {
-            right: 5px;
+
+        .bot-message .message-options {
+            display: flex;
+            align-items: center;
         }
-        .delete-btn {
-            right: 30px; 
-        }
+
+
     </style>
 </head>
 <body> 
     <h1 class="heading"><span class="highlight-container"><span class="highlight">Welcome to ChatGPT 2.0 !</span></span></h1>
-<div id="chat-box"></div>
-<form id="chat-form">
-    <input type="text" id="user-input" placeholder="Type here...">
-    <div class="message-options">
-        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+    <div id="chat-box"></div>
+    <form id="chat-form">
+         <input type="text" id="user-input" placeholder="Type here...">
+         <div class="message-options">
+         <button type="submit"><i class="fas fa-paper-plane"></i></button>
     </div>
-</form>
-    <script>
-    
-    let latestBotResponse = '';
+    </form>
 
+    <script>
+    let latestBotResponse = '';
+    document.getElementById('user-input').addEventListener('input', function(event) {
+        const userInput = event.target.value;
+        const capitalizedInput = userInput.charAt(0).toUpperCase() + userInput.slice(1);
+        event.target.value = capitalizedInput;
+    });
     document.getElementById('chat-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const user_input = document.getElementById('user-input').value.trim();
@@ -160,9 +156,7 @@
             document.getElementById('user-input').value = "";
         }
     });
-
     let speech = null;
-
     function readAloud(element) {
         const botResponse = element.previousSibling.textContent.trim();
         if (speech && !speech.paused) {
@@ -175,7 +169,6 @@
         });
         window.speechSynthesis.speak(speech);
     }
-
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text);
         alert('Text copied to clipboard!');
@@ -183,7 +176,6 @@
     function deleteMessage(messageDiv) {
     messageDiv.remove();
 }
-
     </script>
 </body>
 </html>
