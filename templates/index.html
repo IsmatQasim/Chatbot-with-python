@@ -145,22 +145,11 @@
             if (user_input !== '') {
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML += '<div class="message user-message">You: ' + user_input + '<button class="delete-btn delete-icon" onclick="deleteMessage(this.parentElement)"><i class="fa-regular fa-trash-can"></i></button></div>';
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'user_input=' + encodeURIComponent(user_input)
-                });
-                const data = await response.json();
-                latestBotResponse = data.bot_response;
-                chatBox.innerHTML += '<p class="message bot-message">Bot: ' + latestBotResponse + '<span class="read-aloud-icon" onclick="readAloud(this)"><i class="fas fa-volume-up"></i></span><button class="copy-btn copy-icon" onclick="copyToClipboard(latestBotResponse)"><i class="far fa-copy"></i></button><button class="delete-btn delete-icon" onclick="deleteMessage(this.parentElement)"><i class="fa-regular fa-trash-can"></i></button></p>';
                 chatBox.style.display = 'block';
                 document.getElementById('user-input').value = "";
+                getBotResponse(user_input);
             }
         });
-        
-        let speech = null;
         
         document.getElementById('speech-btn').addEventListener('click', async function(event) {
             const response = await fetch('/speech-to-text', {
@@ -171,9 +160,24 @@
                 document.getElementById('user-input').value = data.text;
                 const chatBox = document.getElementById('chat-box');
                 chatBox.innerHTML += '<div class="message user-message">You: ' + data.text + '<button class="delete-btn delete-icon" onclick="deleteMessage(this.parentElement)"><i class="fa-regular fa-trash-can"></i></button></div>';
+                chatBox.style.display = 'block';
                 sendUserInput(); // Added to send the voice-to-text input to the bot
             }
         });
+        
+        async function getBotResponse(user_input) {
+            const chatBox = document.getElementById('chat-box');
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'user_input=' + encodeURIComponent(user_input)
+            });
+            const data = await response.json();
+            latestBotResponse = data.bot_response;
+            chatBox.innerHTML += '<p class="message bot-message">Bot: ' + latestBotResponse + '<span class="read-aloud-icon" onclick="readAloud(this)"><i class="fas fa-volume-up"></i></span><button class="copy-btn copy-icon" onclick="copyToClipboard(latestBotResponse)"><i class="far fa-copy"></i></button><button class="delete-btn delete-icon" onclick="deleteMessage(this.parentElement)"><i class="fa-regular fa-trash-can"></i></button></p>';
+        }
         
         async function sendUserInput() {
             const user_input = document.getElementById('user-input').value.trim();
@@ -213,9 +217,7 @@
         function deleteMessage(messageDiv) {
             messageDiv.remove();
         }
-        
-        
-    </script>
+        </script>
         
 </body>
 </html>
